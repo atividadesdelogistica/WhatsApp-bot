@@ -7,13 +7,13 @@ const {
 const express = require('express')
 const app = express()
 
-// 🌐 PORTA (OBRIGATÓRIO PRA RENDER)
+// 🌐 SERVIDOR (OBRIGATÓRIO PRA RENDER)
 app.get('/', (req, res) => {
   res.send('Bot WhatsApp ativo 🚀')
 })
 
 const PORT = process.env.PORT || 3000
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log('Servidor rodando na porta ' + PORT)
 })
 
@@ -28,6 +28,7 @@ async function startBot() {
 
   sock.ev.on('creds.update', saveCreds)
 
+  // 🔌 CONEXÃO
   sock.ev.on('connection.update', (update) => {
     const { connection, lastDisconnect } = update
 
@@ -46,26 +47,41 @@ async function startBot() {
     }
   })
 
-  // 👋 MENSAGEM DE BOAS-VINDAS NO GRUPO
+  // 👋 ENTRADA NO GRUPO
   sock.ev.on('group-participants.update', async (data) => {
     if (data.action === 'add') {
       await sock.sendMessage(data.id, {
         text: `👋 *BEM-VINDO(A) A ABYSS KINGS!*
 
-🌟 Seja bem-vindo ao grupo!
-
-🎮 *HABILIDADES OBRIGATÓRIAS:*
+━━━━━━━━━━━━━━
+🎮 *HABILIDADES OBRIGATÓRIAS*
 ✅ Alok
+➡️ Cura / velocidade
+
 ✅ Kelly
+➡️ Corrida rápida
+
 ✅ Moco
-✅ Maxim ou Leon
+➡️ Marca inimigos
 
-📌 Envie seu ID para participar.
+✅ Maxim
+➡️ Cura rápida
 
-🔥 Bom jogo!`
+ou
+
+✅ Leon
+➡️ Recuperação em combate
+
+━━━━━━━━━━━━━━
+📌 Envie seu ID para participar`
       })
     }
   })
+
+  // 🔥 MANTER PROCESSO VIVO (IMPORTANTE PRA RENDER)
+  setInterval(() => {
+    console.log("bot ativo...")
+  }, 30000)
 }
 
 startBot()
