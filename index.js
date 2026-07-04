@@ -4,6 +4,20 @@ const {
   DisconnectReason
 } = require('@whiskeysockets/baileys')
 
+const express = require('express')
+const app = express()
+
+// 🌐 PORTA (OBRIGATÓRIO PRA RENDER)
+app.get('/', (req, res) => {
+  res.send('Bot WhatsApp ativo 🚀')
+})
+
+const PORT = process.env.PORT || 3000
+app.listen(PORT, () => {
+  console.log('Servidor rodando na porta ' + PORT)
+})
+
+// 🤖 BOT WHATSAPP
 async function startBot() {
   const { state, saveCreds } = await useMultiFileAuthState('auth')
 
@@ -26,31 +40,32 @@ async function startBot() {
         lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut
 
       if (shouldReconnect) {
+        console.log('Reconectando bot...')
         startBot()
       }
     }
   })
 
+  // 👋 MENSAGEM DE BOAS-VINDAS NO GRUPO
   sock.ev.on('group-participants.update', async (data) => {
     if (data.action === 'add') {
       await sock.sendMessage(data.id, {
-        text: `👋 *BEM-VINDO(A)!*
+        text: `👋 *BEM-VINDO(A) A ABYSS KINGS!*
 
-🎮 HABILIDADES OBRIGATÓRIAS:
+🌟 Seja bem-vindo ao grupo!
+
+🎮 *HABILIDADES OBRIGATÓRIAS:*
 ✅ Alok
 ✅ Kelly
 ✅ Moco
 ✅ Maxim ou Leon
 
-📌 Envie seu ID para participar.`
+📌 Envie seu ID para participar.
+
+🔥 Bom jogo!`
       })
     }
   })
-
-  // 🔥 mantém processo vivo na Render
-  setInterval(() => {
-    console.log("bot ativo...")
-  }, 30000)
 }
 
 startBot()
